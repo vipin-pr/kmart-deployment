@@ -1,0 +1,122 @@
+{% extends 'user/theme.html' %}
+
+{% load static %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+
+<br><br><br>
+<br><br><br>
+<br><br><br>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 bg-light p-4 ms-4 rounded shadow" style="height: 400px;">
+            <h4>Hello {{user.first_name}}</h4>
+              <ul class="list-group">
+                <a href="{% url 'user_page' %}"><li class="list-group-item rounded-4">Profile</li></a>
+                <a href="{% url 'user_address' %}"><li class="list-group-item rounded-4">Shopping Address</li></a>
+                <a href="{% url 'order_history' %}"><li class="list-group-item rounded-4">Order History</li></a>
+                <a href="{% url 'wishlist' %}"><li class="list-group-item rounded-4">My Wishlist</li></a>
+                <a href="{% url 'cart' %}"><li class="list-group-item rounded-4">My Cart</li></a>
+                <a href="{% url 'wallet' %}"><li class="list-group-item rounded-4 active">Wallet</li></a>
+                <a href="{% url 'logout_user' %}"><li class="list-group-item rounded-4">Log Out</li></a>
+              </ul>
+          </div>
+        <!-- Main Content -->
+        <div class="col-md-9">
+          {% if messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+           {{message}}
+
+        {% endfor %}
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+     </div>
+     {% endif %}
+            <div class="row">
+                <div class="col-md-6 offset-md-3 ">
+                    <div class="bg-light rounded shadow">
+                        <div class="p-4">
+                            <h1 class="display-6 mb-4">My <span class="fw-normal">Wallet</span></h1>
+                            <div class="d-flex justify-content-between mb-4 text-primary">
+                                <h6 class="mb-0 me-4">Last transaction:</h6>
+                                <p class="mb-0">{{wallet.last_transaction}}</p>
+                            </div>
+                            
+                            
+                        </div>
+
+
+<button id="show-history-button" style="float: right;" class="btn btn-sm">show history</button><br>
+<table class="table table-striped" style="display: none; margin-left: 5px;" id="history-table">
+  <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Discription</th>
+      <th scope="col">Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for transaction in transactions %}
+
+    <tr>
+      <td>{{transaction.transaction_date}}</td>
+      <td>{{transaction.discription}}</td>
+      {% if transaction.transaction_amount < 0 %}
+
+      <td class="mb-0 text-danger"> {{transaction.transaction_amount}}</td>
+      {% else %}
+      <td class="mb-0 text-success"> +{{transaction.transaction_amount}}</td>
+      {% endif %}
+
+    </tr>
+    {% endfor %}
+    
+  </tbody>
+</table><br>
+                        <div class="d-flex justify-content-between mb-4 ms-4 ">
+                            <h4 class="mb-0 me-4">Balance:</h4>
+                            <h4 class="mb-0">₹{{wallet.balance}}</h4>
+                        </div>
+                        
+                        <button class="btn border-secondary rounded-pill px-4 py-2 text-primary text-uppercase mb-4 ms-4" type="button">Add Money</button>
+                    </div>
+
+
+              
+
+                </div>
+            </div>
+
+
+
+
+
+
+            
+        </div>
+    </div>
+</div>
+    
+
+
+
+
+
+               
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('#show-history-button').click(function(){
+        $('#history-table').show();
+        $('#show-history-button').hide();
+    })
+   
+    </script>
+    
+
+    {% endblock %}

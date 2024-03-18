@@ -1,0 +1,148 @@
+{% extends 'admin/admin_theme.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    table.table-class th, table.table-class td {
+        /* Add your styles here */
+        padding: 10px; /* Example */
+        border: 1px solid #000; /* Example */
+        text-align: center;
+        /* margin: 50px; */
+    }
+
+
+</style>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fa-solid fa-box"></i>
+        Orders
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table  class="table-class" id="table-id" >
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>customer</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Delivery Address</th>
+                            <th>Email</th>
+                            
+                            <th>Delivery Stutus</th>
+                            <th>Return/ Cancel</th>
+                            <th>Payment Status</th>
+                            
+                    </thead>
+                    <tfoot>
+                        
+                    </tfoot>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr style="border: 2px solid red;">
+                            <td>{{order.id}}</td>
+                            <td>{{order.user}}</td>
+                            <td>
+                                <ul>
+                                    {% for item in order.items.all %}
+                                    <li>{{item.product}} <br>{{item.product.quantity}}/{{item.product.unit}} - {{item.quantity}} Nos</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>₹{{order.total_price}}</td>
+                            <td>
+                                {{order.address.address_line}} <br>
+                                {{order.address.landmark}} <br>
+                                PIN: {{order.address.pin}} <br>
+                                {{order.address.city}} 
+        
+                            </td>
+                            <td>{{order.user.email}}</td>
+                            <td>
+
+
+
+
+                                    {% if order.status == 'Pending' %}
+                                    <select style="width: 120px;" class="status btn btn-primary" data-order-id="{{order.id}}" name="status">
+
+                                        <option class="btn btn-primary" selected class="pending" value="Pending">Pending</option>
+                                        <option class="btn btn-warning" value="Dispatched">Dispatched</option>
+                                        <option class="btn btn-success" value="Delivered">Delivered</option>
+                                        <option class="btn btn-danger" value="Cancel">Cancel</option>
+                                    </select>
+                                
+                                    {% elif order.status == 'Dispatched' %}
+                                    <select style="width: 125px;" class="status btn btn-warning" data-order-id="{{order.id}}" name="status">
+
+                                    <option selected class="btn btn-warning" value="Dispatched">Dispatched</option>
+                                    <option class="btn btn-success" value="Delivered">Delivered</option>
+                                    <option class="btn btn-danger" value="Cancel">Cancel</option>
+
+                                    </select>
+                                    {% elif order.status == 'Cancel' %}
+                                    <BUtton style="width: 120px;" class="btn btn-danger">Cancelled</BUtton>
+
+                                
+                                    {% else %}
+                                    
+                                    <BUtton style="width: 120px;" class="btn btn-success">Delivered</BUtton>
+                                
+                                    {% endif %}
+                                
+                            </td>
+                            <td>{{order.return_status}}</td>
+                            <td>
+                                {% if order.payment_status %}
+                                <span style="color: green; font-size: 1.1rem;"><i class="fa-regular fa-circle-check"></i> Paid </span>
+                                {% else %}
+                                 <span style="color: rgb(243, 86, 1); font-size: 1.1rem;"><i class="fa-solid fa-spinner"></i></i> Pending</span> 
+                                 {% endif %}</td>
+                            
+                                 
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+   $(document).ready(function() {
+    $('.status').change(function() {
+        console.log("changed");
+
+        var status = $(this).val();
+        var orderId = $(this).data('order-id');
+        console.log(status)
+        
+        $.ajax({
+            url: "{% url 'update_order_status' %}",  // update this with your URL
+            type: 'POST',
+            data: {
+                'order_id': orderId,
+                'status': status,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                // handle success
+                console.log(response);
+            },
+            error: function(response) {
+                // handle error
+                console.log(response);
+            }
+        });
+    });
+});
+
+</script>
+{% endblock %}
+

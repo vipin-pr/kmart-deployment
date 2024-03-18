@@ -1,0 +1,292 @@
+{% extends 'admin/admin_theme.html' %}
+{% load static %}
+
+
+                {% block content %}
+                    <div class="container-fluid px-4">
+                        <h1 class="mt-4 text-success"><i class="fa-solid fa-chart-line"></i> Dashboard</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item active"></li>
+                        </ol>
+                        <hr>
+                        <div class="row">
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-primary text-white mb-4">
+                                    <div class="card-body">Total sales</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="#">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-warning text-white mb-4">
+                                    <div class="card-body">Visitors</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="#">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-success text-white mb-4">
+                                    <div class="card-body">Sales Report</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="{% url 'sales_report' %}">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-danger text-white mb-4">
+                                    <div class="card-body">Users</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="{% url 'admin_userlist' %}">View Details</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+<hr>
+                        <div class="row p-4" style="display: none;" id="top-selling-div">
+                          <h3 style="text-align: center; color: burlywood;"><i class="fa-regular fa-star"></i><span id="header"></span><i class="fa-regular fa-star"></i></h3>
+                            <div class="col-xl-3 col-md-4">
+                              <div class="card bg-secondary text-white mb-4">
+                                  <div class="card-body result" style="display: none; text-align: center;" id="res-1">sample 1</div>
+                                  
+                              </div>
+                            </div>
+
+                            <div class="col-xl-3 col-md-4">
+                              <div class="card bg-secondary text-white mb-4">
+                                  <div class="card-body result" id="res-2" style="display: none; text-align: center;">sample 2</div>
+                                  
+                              </div>
+                            </div>
+
+                            <div class="col-xl-3 col-md-4">
+                              <div class="card bg-secondary text-white mb-4">
+                                  <div class="card-body result" id="res-3" style="display: none; text-align: center;">sample 3</div>
+                                  
+                              </div>
+                            </div>
+
+                            <div class="col-xl-3 col-md-4">
+                              <div class="card bg-secondary text-white mb-4">
+                                  <div class="card-body result" id="res-4" style="display: none; text-align: center;">sample 4</div>
+                                  
+                              </div>
+                            </div>
+
+                            <div class="col-xl-3 col-md-4">
+                              <div class="card bg-secondary text-white mb-4">
+                                  <div class="card-body result" id="res-5" style="display: none; text-align: center;">sample 5</div>
+                                  
+                              </div>
+                            </div>
+                            <div class="col-xl-3 col-md-4">
+                              <div class="card bg-secondary text-white mb-4">
+                                  <div class="card-body result" id="res-6" style="display: none; text-align: center;">sample 6</div>
+                                  
+                              </div>
+                            </div>
+                            <div class="col-xl-3 col-md-4">
+                              <div class="card bg-secondary text-white mb-4">
+                                  <div class="card-body result" id="res-7" style="display: none; text-align: center;">sample 7</div>
+                                  
+                              </div>
+                            </div>
+                            <div class="col-xl-3 col-md-4">
+                              <div class="card bg-secondary text-white mb-4">
+                                  <div class="card-body result" id="res-8" style="display: none; text-align: center;">sample 8</div>
+                                  
+                              </div>
+                            </div>
+                            <hr>
+                        </div>
+                        
+                        <div class="row mt-4 ">
+
+                          
+
+                            <div class="col-md-2 bg-light p-1  rounded shadow" style="height: auto;">
+                                <ul class="list-group">
+                                  <button class="btn  rounded-4 "><li class="list-group-item list-group-item-success  active chart-button" data-range="10">Last 10 Days</li></button>
+                                  <button class="btn rounded-4"><li class="list-group-item list-group-item-success chart-button" data-range="week">Last Week</li></button>
+                                  <button class="btn rounded-4"><li class="list-group-item list-group-item-success chart-button" data-range="month">Last Month</li></button>
+                                  <button class="btn rounded-4"><li class="list-group-item list-group-item-success chart-button"data-range="year">Last Year</li></button>
+                                  
+                                  
+                                </ul>
+                            </div>
+
+                            
+
+
+
+
+
+
+
+
+                           
+
+                            <div class=" col-md-8">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <i class="fas fa-chart-area me-1"></i>
+                                        Revenue Chart
+                                    </div>
+                                    <div class="card-body"><canvas id="myChart" width="100%" height="40"></canvas></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 bg-light p-1  rounded shadow" style="height: auto;">
+                              <ul class="list-group">
+                                <button class="btn rounded-4 "><li class="top-selling list-group-item list-group-item-danger" data-select="product">Top Selling Product</li></button>
+                                <button class="btn rounded-4"><li class="top-selling list-group-item list-group-item-danger" data-select="category">Top Selling Category</li></button>
+                                <button class="btn rounded-4"><li class="top-selling list-group-item list-group-item-danger" data-select="brand">Top Selling Brand</li></button>
+                                
+                                
+                              </ul>
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="row">
+                          <div class=" col-md-8 offset-md-2">
+                            <div class="card mb-4">
+                              <div class="card-header">
+                                  <i class="fas fa-chart-area me-1"></i>
+                                  Order Chart
+                              </div>
+                              <div class="card-body"><canvas id="order-chart-area" width="100%" height="40"></canvas></div>
+                          </div>
+                          </div>
+                      </div>
+                      
+                        
+                    </div>
+              
+                    
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                                        
+<script>
+ // Initial data
+var labels = {{ label|safe }};
+var data = {{ data|safe }};
+var data_revenue = {{ data_revenue|safe }};
+
+// Get the context of the canvas
+var ctxBar = $('#myChart')[0].getContext('2d');
+var ctxArea = $('#order-chart-area')[0].getContext('2d');
+
+
+// Create the bar chart
+var myBarChart = new Chart(ctxBar, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Revenue',
+            data: data_revenue,
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Create the area chart
+var myAreaChart = new Chart(ctxArea, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Count',
+            data: data,
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+
+$(".top-selling").click(function(){
+  $('.result').hide();
+    $(".top-selling").removeClass("active");
+    $(this).addClass("active");
+    $('#top-selling-div').show();
+    var data = $(this).data('select');
+
+
+    $.ajax({
+      url: "{% url 'top_selling' %}",
+      data: {
+        'data':data
+      },
+      dataType:'json',
+      success: function(data){
+        console.log(data)
+        console.log(data.result)
+
+        for (let i = 0; i < data.result.length; i++) {
+            // Set the text of each div
+            $('#res-' + (i + 1)).text(data.result[i]);
+            $('#res-' + (i + 1)).show();
+        }
+        $('#header').text(data.header);
+
+
+      }
+    })
+
+})
+
+// Add click event listener to the list items
+$(".chart-button").click(function(){
+    $(".chart-button").removeClass("active");
+    $(this).addClass("active");
+
+    var date_range = $(this).data('range');
+
+    $.ajax({
+        url: "{% url 'chart_date_index' %}",
+        data: {
+            'date_range': date_range
+        },
+        dataType: 'json',
+        success: function (data) {
+            // Update the bar chart's data
+            myBarChart.data.labels = data.label;
+            myBarChart.data.datasets[0].data = data.data_revenue;
+
+            // Update the area chart's data
+            myAreaChart.data.labels = data.label;
+            myAreaChart.data.datasets[0].data = data.data;
+
+            // Redraw the charts
+            myBarChart.update();
+            myAreaChart.update();
+        }
+    });
+});
+
+
+</script>
+                    {% endblock %}

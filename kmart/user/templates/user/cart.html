@@ -1,0 +1,471 @@
+{% extends 'user/theme.html' %}
+
+{% load static %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+
+<br><br><br>
+<br><br><br>
+<br><br><br>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 bg-light p-4 ms-4 rounded shadow" style="height: 400px;">
+          <h4>Hello {{user.first_name}}</h4>
+            <ul class="list-group">
+              <a href="{% url 'user_page' %}"><li class="list-group-item rounded-4">Profile</li></a>
+              <a href="{% url 'user_address' %}"><li class="list-group-item rounded-4">Shopping Address</li></a>
+              <a href="{% url 'order_history' %}"><li class="list-group-item rounded-4">Order History</li></a>
+              <a href="{% url 'wishlist' %}"><li class="list-group-item rounded-4">My Wishlist</li></a>
+              <a href="{% url 'cart' %}"><li class="list-group-item rounded-4 active">My Cart</li></a>
+              <a href="{% url 'wallet' %}"><li class="list-group-item rounded-4">Wallet</li></a>
+              <a href="{% url 'logout_user' %}"><li class="list-group-item rounded-4">Log Out</li></a>
+            </ul>
+        </div>
+        <!-- Main Content -->
+        <div class="col-md-9 ">
+
+          <h3>Your Cart</h3>
+          {% if messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+           {{message}}
+
+        {% endfor %}
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+     </div>
+     {% endif %}
+
+
+          {% if not cart_items %}
+          
+          <div class="col-md-6 offset-md-3">
+            <img style="height: 60vb;" src="{% static 'img/empty_cart.jpg' %}" alt="">
+            <h5>Your cart is empty...  <a href="{% url 'home' %}#tab-all">Add items to cart</a></h5>
+
+          </div>
+
+
+          {% else %}
+
+
+
+
+            
+          <div class="row">
+            <div class="col-md-8">
+         
+              <table class="table table-striped">
+                <thead>
+                  
+                </thead>
+                <tbody>
+                  
+                  {% for item in cart_items %}
+                  <tr id="item-id-{{item.id}}">
+                    <td><a href="{% url 'view_product' item.product_id %}"><img src="{{item.image}}" alt="Product Image" style="height: 70px;"></a></td>
+                    <td><a style="color: black;" href="{% url 'view_product' item.product_id %}">{{item.product_name}} <br>{{item.unit}}</a></td>
+                    
+                    <td>
+                      <div class="input-group quantity mb-5" style="width: 100px;">
+                          <div class="input-group-btn">
+                              <button data-cartid="{{item.id}}" class="btn btn-sm btn-minus rounded-circle bg-light border" >
+                                  <i class="fa fa-minus"></i>
+                              </button>
+                          </div>
+                          <input type="text" class="form-control form-control-sm text-center border-0" id="quantity{{item.id}}" value="{{item.quantity}}">
+                          <div class="input-group-btn">
+                              <button data-cartid="{{item.id}}" class="btn btn-sm btn-plus rounded-circle bg-light border">
+                                  <i class="fa fa-plus"></i>
+                              </button>
+                          </div>
+                      </div>
+                      
+                      </td>
+                    <td id="item_total{{item.id}}">₹{{item.price}}</td>
+                  </tr>
+                  {% endfor %}
+                  
+                </tbody>
+              </table>
+            <h5><a href="/#tab-all">Continue Shopping -></a></h5>
+
+            </div>
+            <div class="col-md-4">
+
+
+              <div class="mb-1 row">
+                <div class="col">
+                    <input type="text" class="form-control" id="coupon_code" name="coupon_code">
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-secondary"  id="apply_coupon">Apply Coupon</button>
+                </div>
+              </div>   
+              <Span id="applied" style="font-size: small; color: rgb(134, 216, 11);"></Span>
+
+
+                  <!-- <div class="form-group">
+                    <input type="text" name="coupon_code" id="coupon_code"><button class="btn btn-secondary">Apply Coupon</button>
+                  </div>
+                         -->
+                    <table class="table">
+                      <tbody>
+                          <tr>
+                              <td>Products total</td>
+                              <td >₹ <span id="product_total_id" class="total">{{ product_total }}</span></td>
+                          </tr>
+                          <tr>
+                              <td >Delivery Charge</td>
+                              <td>₹{{ delivery }}</td>
+                          </tr>
+                          <tr style="display: none;"  class="discount_row">
+                            <td style="color: rgb(134, 216, 11);">Coupon Discount</td>
+                            <td style="color: rgb(134, 216, 11);">₹<span class="discount"></span></td>
+                          </tr>
+
+
+
+                          <tr>
+                              <th scope="row">Total</th>
+                              <th scope="row">₹<strong class="grand_total">{{ total }}</strong></th>
+                          </tr>
+                      </tbody>
+                  </table>
+
+
+
+
+
+
+              
+              <br><hr><br>
+              <h3>Delevery Address</h3><hr>
+              <p>{{address.address_line}}</p>
+              <p>{{address.landmark}}</p>
+              <p>{{address.city}}</p>
+              <p>PIN:{{address.pin}}</p>
+              <p>Mob:{{address.user_id.phone}}</p>
+
+              <a href="{% url 'user_address' %}" class="btn btn-outline-secondary">Change Address</a><br><br>
+              
+              <button data-bs-toggle="modal" data-bs-target="#checkout" id="proceed-checkout-button" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button">Proceed Checkout</button>
+              
+
+            </div>
+          </div>
+{% endif %}
+        </div>
+    </div>
+</div>
+    
+
+
+
+<!-- modal for checkout -->
+<div class="modal fade" id="checkout" tabindex="-1" role="dialog" aria-labelledby="checkoutLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Checkout Page</h5>
+          <button type="button" class="close bg-danger text-white" style="border-radius: 3px; border: hidden;" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+          </button>
+      </div>
+      <div class="modal-body">
+          <!-- Your form goes here -->
+          <form class="checkout-form" action="{% url 'checkout' %}" method="post">
+          {% csrf_token %}
+
+          <table class="table">
+            <tbody>
+                <tr>
+                    <td>Products total</td>
+                    <td>₹<span class="total">{{ product_total }}</span></td>
+                </tr>
+                <tr>
+                    <td>Delivery Charge</td>
+                    <td>₹{{ delivery }}</td>
+                </tr>
+                <tr style="display: none;"  class="discount_row">
+                  <td style="color: rgb(134, 216, 11);">Coupon Discount</td>
+                  <td style="color: rgb(134, 216, 11);">₹<span class="discount"></span></td>
+                </tr>
+                <tr>
+                    <th scope="row">Total</th>
+                    <th scope="row">₹<strong class="grand_total">{{total}}</strong></th>
+                </tr>
+            </tbody>
+        </table>
+          <div class="form-group">
+              <h6>Choose Payment Option</h6><hr>
+
+              <input type="radio" id="card" name="payment" value="card" required>
+              <label for="card">Credit/Debit card</label><br>
+
+              <input type="radio" id="upi" name="payment" value="upi" required>
+              <label for="upi">BHIM UPI</label><br>
+
+              <input type="radio" id="wallet" name="payment" value="wallet" required>
+              <label for="wallet">Wallet</label><br>
+
+
+              <input type="radio" id="cod" name="payment" value="cod" required>
+              <label for="cod" id="cod-label">Cash on Delivery</label><br>
+              <p id="cod-warning" style="font-size: smaller; color: red;">Orders above 1000 cannot be paid with Cash on Delivery.</p>
+
+          
+          </div>
+          <hr>
+          
+          
+          <div class="form-group">
+              <label for="instructions">Delivery Instructions</label>
+              <input type="text" class="form-control" id="instructions" name="instructions" placeholder="Preffered time for delivery or any other instructions">
+          </div>
+          
+
+          
+        
+          
+          <!-- Add more fields as needed -->
+          <div class="modal-footer">
+
+            <input type="hidden" name="total_price" class="grand_total" value="{{total}}">
+            <input type="hidden" name="address_id" value="{{address.id}}">
+            <input type="hidden" id="applied_coupon_code" name="coupon_code" value="">
+
+          <button type="submit" id="" class="btn btn-primary">Confirm Order</button>
+
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+          </form>
+      </div>
+      
+      </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- model for razorpay -->
+<div class="modal fade" id="razorpay" tabindex="-1" role="dialog" aria-labelledby="razorpayLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Choose payment gateway</h5>
+          <button type="button" class="close bg-danger text-white" style="border-radius: 3px; border: hidden;" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+          </button>
+      </div>
+      <div class="modal-body" style="font-size: smaller; color: red;">
+          <!-- Your form goes here -->
+          <form action="{% url 'payment_status' %}" method="POST">
+
+            {% csrf_token %}
+            
+            
+        <script
+            src="https://checkout.razorpay.com/v1/checkout.js"
+            data-key="rzp_test_b714EP5tPrXbn2"
+            data-amount="{{order.total_price}}"
+            data-currency="INR"
+            data-order_id="{{order.order_id}}"
+            data-buttontext="Pay with Razorpay"
+            data-name="Kino Mart Grocery"
+            data-description="Compleate Grocery Store"
+            data-image="https://example.com/your_logo.jpg"
+            data-prefill.name="{{order.user}}"
+            data-prefill.email="abc@ss.com"
+            data-theme.color="#F37254"
+        ></script>
+        <input type="hidden" custom="Hidden Element" name="hidden"/>
+        {% if coupon_code %}
+        <input type="hidden" name="coupon_code" id="" value="{{coupon_code}}">
+        {% endif %}
+        </form>
+          
+      </div>
+      
+      </div>
+  </div>
+</div >
+
+
+
+
+               
+<style>
+  .table td {
+      vertical-align: middle;
+  }
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+{% if show_checkout_modal %}
+<script>
+$(document).ready(function(){
+    $("#razorpay").modal('show');
+});
+</script>
+{% endif %}
+
+<script>
+
+$(document).ready(function(){
+
+// for cod disabling when more than 1000
+$('#proceed-checkout-button').click(function(){
+  var product_total = parseInt($('#product_total_id').text(), 10);
+    console.log(product_total)
+    if (product_total > 1000) {
+        $('#cod').prop('disabled', true);
+        $('#cod-warning').show();
+    } else {
+      $('#cod-warning').hide();
+
+    }
+})
+
+
+
+$(".btn-minus").on('click', function() {
+  var cartid = $(this).data('cartid');
+  var quantityInput = $("#quantity" + cartid);
+  var newQuantity = parseInt(quantityInput.val()); // Decrement quantity
+  var item_total =$("#item_total" + cartid)
+  console.log(item_total)
+
+  if (newQuantity === 0) {
+    if (confirm("Are you sure you want to remove this item from your cart?")) {
+      quantityInput.val(newQuantity);
+      $.ajax({
+        url: "/update_cart/", // Use the appropriate URL for removing
+        type: "POST",
+        data: {
+          'cartid': cartid,
+          'quantity': newQuantity,
+
+          'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+        },
+        success: function(response) {
+          $('.total').text(response.newTotal);
+          $('.grand_total').text(response.grand_total);
+          var trId='#item-id-'+cartid;
+          $(trId).hide();
+
+          if (response.newTotal == 0){
+          $('.grand_total').text(response.newTotal);
+          $('#proceed-checkout-button').hide();
+
+          }
+          // Handle success, likely removing the item from the cart display
+        }
+      });
+    }
+  } else {
+    quantityInput.val(newQuantity);
+    $.ajax({
+      url: "/update_cart/",
+      type: "POST",
+      data: {
+        'cartid': cartid,
+        'quantity': newQuantity,
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+      },
+      success: function(response) {
+        $('.total').text(response.newTotal);
+        $('.grand_total').text(response.grand_total);
+
+        // Handle success
+      }
+    });
+  }
+});
+
+
+$(".btn-plus").on('click', function() {
+    var cartid = $(this).data('cartid');
+    var quantityInput = $("#quantity" + cartid);
+    var newQuantity = parseInt(quantityInput.val());
+    quantityInput.val(newQuantity);
+
+    $.ajax({
+        url: "/update_cart/",  // Update this to your URL
+        type: "POST",
+        data: {
+            'cartid': cartid,
+            'quantity': newQuantity,
+            'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+        },
+        success: function(response) {
+          $('.total').text(response.newTotal);
+          $('.grand_total').text(response.grand_total);
+            
+          // Handle success
+        }
+    });
+});
+
+
+$("#apply_coupon").on('click', function() {
+  
+
+    var coupon_code = $('#coupon_code').val();
+    var product_total = $('#product_total_id').text();
+    console.log(coupon_code);
+    console.log(product_total);
+    
+
+    $.ajax({
+        url: "/apply_coupon/", 
+        type: "POST",
+        data: {
+            'coupon_code': coupon_code,
+            'product_total':product_total,
+            
+            'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+        },
+        success: function(response) {
+          
+          alert(response.message);
+          $('#applied').show().text(response.message);
+          if (response.discount){
+            var discount = response.discount;
+            discount = parseFloat(discount).toFixed(2)
+            console.log(discount);
+            $('.discount').text(discount);
+            $('.discount_row').show();
+            $('.grand_total').text(response.total);
+            $('.grand_total').val(response.total);
+            $('#applied_coupon_code').val(coupon_code);
+
+
+
+          }
+          
+
+            
+        }
+    });
+});
+
+
+
+
+
+
+
+
+
+
+})
+    </script>
+    
+
+    {% endblock %}

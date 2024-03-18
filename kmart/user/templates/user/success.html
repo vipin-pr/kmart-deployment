@@ -1,0 +1,79 @@
+{% extends 'user/theme.html' %}
+
+{% load static %}
+{% block content %}
+
+<div class="row">
+    <br><br><br><br><br><br><br>
+</div>
+<div class="row">
+    
+<div class="col-md-4 bg-white rounded-4 mt-5 p-3">
+  
+  
+
+    <!-- {% if messages %} -->
+    <div class="alert alert-Success alert-dismissible fade show" role="alert">
+        <!-- {% for message in messages %}
+           {{message}} -->
+           
+
+        <!-- {% endfor %} -->
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+     </div>
+     <!-- {% endif %} -->
+
+    
+
+    
+    </div>
+    
+
+    <!-- image section started -->
+    <div class="col-md-5">
+        {% if status %}
+
+        <div style="margin-left: 50px; color:rgb(8, 91, 22);">
+            <h4 style=" color:rgb(0, 114, 19);">
+            
+                Order Placed Successfully
+                
+                
+            </h4>
+                {% if discount != 0 %}
+
+            <p style="margin-left: 20px;">
+                You have saved ₹{{discount}} on this order!!
+            </p>
+                {% endif %}
+        </div>
+        {% if order_id %}
+        <a href="{% url 'invoice' order_id %}"><i class="fa-solid fa-receipt"></i> Download Invoice</a>
+       {% endif %}
+        <a href="{% url 'order_history' %}"> <img style="width: 85%;" src="{% static 'img/order.jpg' %}" alt="Order Placed"></a>
+    
+    
+        {% else %}
+
+        <div style="margin-left: 50px; color:rgb(230, 15, 43);">
+            <h4 style=" color:rgb(209, 15, 25);">
+            
+                Something went wrong!
+                
+                
+            </h4>
+                
+        </div>
+       <a href="{% url 'cart' %}"> <img style="width: 85%;" src="{% static 'img/error_sorry_image.jpg' %}" alt="Go to cart"></a>
+    
+
+
+        {% endif %}
+    <!-- end of image section -->
+    </div>
+
+
+
+
+
+{% endblock %}

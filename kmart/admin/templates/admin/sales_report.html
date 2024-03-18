@@ -1,0 +1,59 @@
+<h3 style="text-align: center;"> Sales Report </h3>
+<h6 style="text-align: center;">{{from_date}} to {{to_date}}</h6>
+{% if range == 'custom' %}
+<!-- <a href="/admin/sales_report/{{from_date}}/{{to_date}}">Download CSV</a><br>
+<a href="/admin/sales_report_pdf/{{from_date}}/{{to_date}}">Download PDF</a> -->
+
+{% else %}
+
+
+
+
+{% endif %}
+        <hr>
+        <div class="row">
+            <div class="col-md-10">
+                <p><strong>Sales count:</strong> {{ orders.count }}</p>
+                <p><strong>Order amount:</strong> ₹{{ total_order_amount }}</p>
+                <p><strong>Sales discount:</strong> ₹{{ total_discount }}</p>
+
+            </div>
+            <div class="col-md-2 text-success">
+                <a class="btn" title="Download as .csv file" href="{% url 'sales_report_range' range %}"><i class="fa-solid fa-download fa-lg"></i> <i class="fa-solid fa-file-csv fa-lg"></i></a><br>
+                <a class="btn" title="Download as .pdf file" href="{% url 'sales_report_pdf' range %}"><i class="fa-solid fa-download fa-lg"></i> <i class="fa-solid fa-file-pdf fa-lg"></i></a>
+                
+            </div>
+        </div>
+        <hr>
+        <table id="datatablesSimple" class="table m-3">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Order Date</th>
+                    <th>Total</th>
+                    <th>Discount</th>
+                    <th>Recieved</th>
+                    <th>Payment Method</th>
+                   
+                </tr>
+            </thead>
+            <tfoot>
+                
+            </tfoot>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{order.id}}</td>
+                    <td>{{order.user}}</td>
+                    <td>{{order.order_date}}</td>
+                    <td>{{order.actual_price}}</td>
+                    <td>{{order.discount}}</td>
+                    <td>{{order.total_price}}</td>
+                    <td>{{order.payment_method}}</td>
+                    
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>

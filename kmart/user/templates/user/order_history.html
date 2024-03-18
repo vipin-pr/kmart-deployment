@@ -1,0 +1,324 @@
+{% extends 'user/theme.html' %}
+
+{% load static %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+
+<br><br><br>
+<br><br><br>
+<br><br><br>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 bg-light p-4 ms-4 rounded shadow" style="height: 400px;">
+            <h4>Hello {{user.first_name}}</h4>
+              <ul class="list-group">
+                <a href="{% url 'user_page' %}"><li class="list-group-item rounded-4">Profile</li></a>
+                <a href="{% url 'user_address' %}"><li class="list-group-item rounded-4">Shopping Address</li></a>
+                <a href="{% url 'order_history' %}"><li class="list-group-item rounded-4 active">Order History</li></a>
+                <a href="{% url 'wishlist' %}"><li class="list-group-item rounded-4">My Wishlist</li></a>
+                <a href="{% url 'cart' %}"><li class="list-group-item rounded-4">My Cart</li></a>
+                <a href="{% url 'wallet' %}"><li class="list-group-item rounded-4">Wallet</li></a>
+                <a href="{% url 'logout_user' %}"><li class="list-group-item rounded-4">Log Out</li></a>
+              </ul>
+          </div>
+        <!-- Main Content -->
+        <div class="col-md-9">
+
+            {% if messages %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {% for message in messages %}
+                   {{message}}
+        
+                {% endfor %}
+               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+             </div>
+             {% endif %}
+
+            <h3 style="color: rgb(18, 146, 16);">Order history page</h3>
+            <hr>
+
+    
+
+{% for order in orders %}
+            <div class="row">
+                <div class="col-md-5" style="margin-left: 30px; border-left: solid rgb(32, 134, 3) 2px; padding-left: 30px;">
+                    <h6>Order ID: {{ order.order_id }}</h6>
+                    <p>Order Date: {{ order.order_date }}</p>
+                    {% if order.status == 'Delivered' %}
+                    <p>Delivered on: 04/04/2024</p>
+                    {% else %}
+                    <p>Delivery Expected on: 01/01/2026</p>
+                    {% endif %}
+                    <p>Total Price: ₹{{ order.total }}</p>
+                </div>
+                <div class="col-md-6" style="border-left: solid rgb(32, 134, 3) 2px; padding-left: 30px;">
+                    <p>Payment Method: {{ order.payment_method }}</p>
+                    
+                    <!-- <p>Delivery Instructions: {{ order.delivery_instructions }}</p> -->
+                    {% if order.status == 'Cancel' %}
+                    <p>Status: <span style="color: rgb(245, 3, 3);">Cancelled by admin</span></p>
+
+                    {% elif order.status == 'Pending' %}
+                        {% if not order.return_status %}
+                        <p>Status: <span style="color: rgb(167, 167, 3);">{{ order.status }}</span>
+
+                            <a href="{% url 'cancel_order' order.order_id %}" class="btn btn-danger btn-sm" style="margin-left: 15px;" onclick="return confirm('Are you sure you want to cancel this order?');">cancel order</a>
+                        {% elif order.return_status == 'Cancelled' %}
+                        <p>Status: <span style="color: rgb(245, 3, 3);">Order Cancelled</span>
+                        {% endif %}
+                        
+                    </p>
+                    {% elif order.status == 'Dispatched' %}
+                    <p>Status: <span style="color: rgb(199, 108, 4);">{{ order.status }}</span>
+                        <!-- <button class="btn btn-danger btn-sm" style="margin-left: 15px;">cancel order</button> -->
+                    </p>
+                    {% else %}
+                    {% if not order.return_status %}
+                        <p>Status: <span style="color: rgb(52, 208, 13);">{{ order.status }}</span></p>
+
+                        <a href="{% url 'return_order' order.order_id %}" class="btn btn-secondary btn-sm" onclick="return confirm('Are you sure you want to return this order?');" style="margin-left: 15px;">Return</a>
+                    {% else %}
+                    <p>Status: <span style="color: rgb(245, 3, 3);">Item Returned</span></p>
+                        {% endif %}
+
+                    
+
+
+                        {% endif %}
+                    {% if not order.payment_status %}
+                    <button data-bs-toggle="modal" data-razorpay_order_id="{{order.razorpay_order_id}}" data-user="{{order.user}}" data-orderid="{{order.order_id}}" data-total="{{order.total}}" data-bs-target="#checkout" class="btn btn-outline-primary btn-sm make-payment-button"><i class="fa-solid fa-money-check-dollar"></i> Make Payment</button><br><br>
+                    {% endif %}
+                    <button class="btn btn-outline-secondary btn-sm toggleButton" data-orderid="{{ order.order_id }}">Show Details <i class="fa-solid fa-angle-right"></i></button>
+                    
+                </div>
+            </div>
+            <hr>
+    
+    <div class="details p-2 m-2" id="details{{ order.order_id }}" style="display: none; background-color: rgba(244, 236, 224, 0.648);">
+        <div class="row">
+            <div class="col-md-3 p-4">
+                <h6>Delivery Address :</h6>
+                <p> {{ order.address.address_line }} <br>
+                    {{ order.address.landmark }}<br>
+                    pin: {{ order.address.pin }}<br>
+                    {{ order.address.city }}
+                </p>
+            </div>
+            <div class="col-md-9">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product Image</th>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items %}
+        
+                            <tr>
+                                {% if item.image %}
+        
+                                <td><a href="{% url 'view_product' item.product_id %}"><img src="{{ item.image.image.url }}" alt="Product Image" style="height: 50px;"></a></td>
+                                {% endif %}
+                                
+                                <td><a style="color: black;" href="{% url 'view_product' item.product_id %}">{{item.product}} - ({{item.product.quantity}}{{item.product.unit}})</a></td>
+                                <td>{{ item.quantity }}</td>
+                                <td>₹{{ item.price }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+
+    
+
+        
+    </div>
+
+{% endfor %}
+
+
+
+            
+
+
+
+
+
+        </div>
+    </div>
+</div>
+    
+
+
+
+<!-- modal for checkout -->
+<div class="modal fade" id="checkout" tabindex="-1" role="dialog" aria-labelledby="checkoutLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Continue Payment</h5>
+            <button type="button" class="close bg-danger text-white" style="border-radius: 3px; border: hidden;" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <!-- Your form goes here -->
+            <form class="checkout-form" action="{% url 'continue_checkout' %}" method="post">
+            {% csrf_token %}
+  
+            <table class="table">
+              <tbody>
+                  <tr>
+                  
+                  <tr>
+                      <th scope="row">Pending Amount</th>
+                      <th scope="row">₹<strong class="grand_total">{{total}}</strong></th>
+                  </tr>
+              </tbody>
+          </table>
+            <div class="form-group">
+                <h6>Choose Payment Option</h6><hr>
+  
+                <input type="radio" id="card" name="payment" value="card" required>
+                <label for="card">Credit/Debit card</label><br>
+  
+                <input type="radio" id="upi" name="payment" value="upi" required>
+                <label for="upi">BHIM UPI</label><br>
+  
+                <input type="radio" id="wallet" name="payment" value="wallet" required>
+                <label for="wallet">Wallet</label><br>
+  
+
+                
+                
+            
+            </div>
+            <hr>
+            
+        
+            
+  
+            
+          
+            
+            <!-- Add more fields as needed -->
+            <div class="modal-footer">
+  
+              <input type="hidden" name="total_price" class="grand_total" value="">
+              <input type="hidden" id="order_id" name="order_id" value="">
+  
+            <button type="submit" id="" class="btn btn-primary">Confirm Order</button>
+  
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+            </form>
+            
+        </div>
+        
+        </div>
+    </div>
+  </div>
+  
+<!-- model for razorpay -->
+<div class="modal fade" id="razorpay" tabindex="-1" role="dialog" aria-labelledby="razorpayLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Choose payment gateway {{selected_order.total_price}}</h5>
+            <button type="button" class="close bg-danger text-white" style="border-radius: 3px; border: hidden;" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="modal-body" style="font-size: smaller; color: red;">
+            <!-- Your form goes here -->
+            <form action="{% url 'continue_payment_status' %}" method="POST">
+  
+              {% csrf_token %}
+              
+              
+          <script
+              src="https://checkout.razorpay.com/v1/checkout.js"
+              data-key="rzp_test_b714EP5tPrXbn2"
+              data-amount="{{selected_order.total_price}}"
+              data-currency="INR"
+              data-order_id="{{selected_order.order_id}}"
+              data-buttontext="Pay with Razorpay"
+              data-name="Kino Mart Grocery"
+              data-description="Compleate Grocery Store"
+              data-image="{% static 'img/logo_icon.png' %}"
+              data-prefill.name="{{selected_order.user}}"
+              data-prefill.email="abc@ss.com"
+              data-theme.color="#F37254"
+          ></script>
+          <input type="hidden" custom="Hidden Element" name="hidden"/>
+          {% if coupon_code %}
+          <input type="hidden" name="coupon_code" id="" value="{{coupon_code}}">
+          {% endif %}
+          </form>
+            
+        </div>
+        
+        </div>
+    </div>
+  </div >
+  
+  
+
+
+               
+
+
+{% endblock %}
+
+{% block scripts %}
+{% if show_checkout_modal %}
+<script>
+$(document).ready(function(){
+    $("#razorpay").modal('show');
+});
+</script>
+{% endif %}
+<script>
+$(document).ready(function(){
+
+    console.log("ready         ")
+
+    $('.make-payment-button').click(function(){
+        console.log("clicked")
+    var total = parseFloat($(this).data('total'));
+    var orderId = $(this).data('orderid');
+    var user = $(this).data('user');
+    var razorpay_order_id = $(this).data('razorpay_order_id');
+    $('.grand_total').val("34567");
+    $('.grand_total').text(total);
+    $('#order_id').val(orderId);
+    console.log("clicked")
+
+
+    
+});
+
+
+    $(".toggleButton").click(function(){
+        var orderId = $(this).data("orderid");
+        var detailsDiv = $("#details" + orderId);
+        
+        if (detailsDiv.is(":visible")) {
+            detailsDiv.fadeOut();
+            $(this).html("Show Details <i class='fa-solid fa-angle-right'></i>");
+        } else {
+            detailsDiv.fadeIn();
+            $(this).html("Hide Details <i class='fa-solid fa-angle-down'></i>");
+        }
+    });
+});
+</script>
+
+    {% endblock %}
