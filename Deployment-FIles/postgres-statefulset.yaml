@@ -14,19 +14,15 @@ spec:
         app: kmart-postgres-db
     spec:
       containers:
-      - name: myapp
-        image: registry.k8s.io/nginx-slim:0.8
+      - name: kmart-postgres-db
+        image: postgres
         ports:
-        - containerPort: 80
-          name: web
+        - containerPort: 5432
+          name: postgres-port
         volumeMounts:
-        - name: www
-          mountPath: /usr/share/nginx/html
-  volumeClaimTemplates:
-  - metadata:
-      name: www
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      resources:
-        requests:
-          storage: 1Gi
+        - name: data
+          mountPath: /var/lib/postgresql/data
+    volumes:
+    - name: data
+      hostPath:
+        path: <needs to be added>
