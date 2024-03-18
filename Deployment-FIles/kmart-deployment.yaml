@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kmart-webapp
+spec:
+  selector:
+    matchLabels:
+      app: kmart-webapp
+  template:
+    metadata:
+      labels:
+        app: kmart-webapp
+    spec:
+      containers:
+      - name: kmart-webapp
+        image: vipinpr77/kmart:1.0
+        envFrom:
+        - configMapRef:
+            name: env-vars
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+        ports:
+        - containerPort: 8000
