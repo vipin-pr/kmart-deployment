@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: kmart-postgres-db
-  serviceName: kmart-db-service
+  serviceName: kmart-postgres-service
   replicas: 1
   template:
     metadata:
@@ -16,6 +16,28 @@ spec:
       containers:
       - name: kmart-postgres-db
         image: postgres
+        env:
+        - name: SECRET_KEY
+          value: "django-insecure-5m_#ue4$qkq3c54r1#s=k2y=@$+m_&wdml4#d7=@@08)&rhfmz"
+        - name: DEBUG
+          value: "True"
+        - name: DATABASE_ENGINE
+          value: "django.db.backends.postgresql"
+        - name: POSTGRES_DB
+          value: "kinomart_new"
+        - name: DATABASE_HOST
+          value: "postgres-service"
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: env-secrets
+              key: database_user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: env-secrets
+              key: database_password
+
         ports:
         - containerPort: 5432
           name: postgres-port
@@ -25,4 +47,18 @@ spec:
     volumes:
     - name: data
       hostPath:
-        path: <needs to be added>
+        path: /data/kinomart-postgres
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kmart-postgres-service
+spec:
+  selector:
+    app: kmart-postgres-db
+  ports:
+  - port: 8000
+    targetPort: 8000
+
