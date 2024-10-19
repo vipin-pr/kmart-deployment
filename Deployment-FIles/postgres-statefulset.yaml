@@ -59,6 +59,6 @@ spec:
   selector:
     app: kmart-postgres-db
   ports:
-  - port: 8000
-    targetPort: 8000
+  - port: 5432
+    targetPort: 5432
 
