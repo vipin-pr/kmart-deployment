@@ -46,9 +46,12 @@ spec:
               name: env-secrets
               key: database_password
         resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
           limits:
-            memory: "512Mi"
-            cpu: "1"
+            memory: "128Mi"
+            cpu: "500m"
         ports:
         - containerPort: 8000
 

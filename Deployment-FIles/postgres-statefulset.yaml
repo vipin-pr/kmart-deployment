@@ -37,13 +37,19 @@ spec:
             secretKeyRef:
               name: env-secrets
               key: database_password
-
         ports:
         - containerPort: 5432
           name: postgres-port
         volumeMounts:
         - name: data
           mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
       volumes:
       - name: data
         hostPath:
