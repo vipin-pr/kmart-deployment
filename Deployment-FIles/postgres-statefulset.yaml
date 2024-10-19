@@ -44,10 +44,10 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/postgresql/data
-    volumes:
-    - name: data
-      hostPath:
-        path: /data/kinomart-postgres
+      volumes:
+      - name: data
+        hostPath:
+          path: /data/kinomart-postgres
 
 
 ---
