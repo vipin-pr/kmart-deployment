@@ -25,6 +25,8 @@ spec:
           value: "kinomart_new"
         - name: DATABASE_HOST
           value: "kmart-postgres-service"
+        - name: DATABASE_PASSWORD
+          value: "1234"
         - name: EMAIL_HOST_USER
           valueFrom:
             secretKeyRef:
@@ -40,11 +42,11 @@ spec:
             secretKeyRef:
               name: env-secrets
               key: database_user
-        - name: DATABASE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: env-secrets
-              key: database_password
+        #- name: DATABASE_PASSWORD
+        #  valueFrom:
+        #    secretKeyRef:
+        #      name: env-secrets
+        #      key: database_password
         resources:
           requests:
             memory: "64Mi"
