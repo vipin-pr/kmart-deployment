@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 from decouple import config
+#import base64
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -91,6 +92,7 @@ DATABASES = {
         'ENGINE': config('DATABASE_ENGINE'),
         'NAME': config('DATABASE_NAME'),
         'USER': config('DATABASE_USER'),
+        #'PASSWORD' : base64.b64decode(DATABASE_PASSWORD).decode('utf-8'),
         'PASSWORD' : config('DATABASE_PASSWORD'),
         'HOST' : config('DATABASE_HOST')
     }
