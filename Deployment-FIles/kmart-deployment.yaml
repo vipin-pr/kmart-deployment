@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: kmart-webapp
-        image: vipinpr77/kmart:1.0
+        image: vipinpr77/kmart:latest
         env:
         - name: SECRET_KEY
           value: "django-insecure-5m_#ue4$qkq3c54r1#s=k2y=@$+m_&wdml4#d7=@@08)&rhfmz"
